@@ -17,4 +17,3 @@ class ProductSerializer(serializers.ModelSerializer):
                 'stock',
                 'slug',
                  )
-        
