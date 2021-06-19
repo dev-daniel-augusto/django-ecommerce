@@ -43,3 +43,11 @@ def decrease_product_quantity(request, product_id):
     else:
         cart_item.delete()
     return redirect('cart')
+
+
+def remove_product(request, product_id):
+    cart = Cart.objects.get(cart_id=_get_cart_id(request))
+    product = Product.objects.get(id=product_id)
+    cart_item = CartItem.objects.get(cart=cart, product=product)
+    cart_item.delete()
+    return redirect('cart')
