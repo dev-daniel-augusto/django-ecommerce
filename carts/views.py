@@ -31,3 +31,15 @@ def add_product_to_cart(request, product_id):
         )
     cart_item.save()
     return redirect('cart')
+
+
+def decrease_product_quantity(request, product_id):
+    cart = Cart.objects.get(cart_id=_get_cart_id(request))
+    product = Product.objects.get(id=product_id)
+    cart_item = CartItem.objects.get(cart=cart, product=product)
+    if cart_item.quantity > 1:
+        cart_item.quantity = cart_item.quantity - 1
+        cart_item.save()
+    else:
+        cart_item.delete()
+    return redirect('cart')
