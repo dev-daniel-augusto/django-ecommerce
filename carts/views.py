@@ -51,3 +51,28 @@ def remove_product(request, product_id):
     cart_item = CartItem.objects.get(cart=cart, product=product)
     cart_item.delete()
     return redirect('cart')
+
+
+class CartView(TemplateView):
+    template_name = 'cart.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        quantity = 0
+        total = 0
+        try:
+            cart = Cart.objects.get(cart_id=_get_cart_id(self.request))
+            cart_items = CartItem.objects.filter(cart=cart)
+            context['cart_items'] = cart_items
+            for cart_item in cart_items:
+                quantity += cart_item.quantity
+                total += (cart_item.quantity * cart_item.product.price)
+            tax = (5 * total)/100
+            final_price = f'{total + tax:.2f}'
+            context['quantity'] = quantity
+            context['total'] = total
+            context['tax'] = tax
+            context['final_price'] = final_price
+        except CartItem.DoesNotExist:
+            pass
+        return context
