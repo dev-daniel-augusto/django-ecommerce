@@ -37,11 +37,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'stdimage',
+
+    # Internal Apps
     'home',
     'category',
     'user',
     'store',
+    'carts',
+    'api',
+
+    # External Packages
+    'stdimage',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +74,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'category.context_processors.menu',
+                'carts.context_processors.counter',
             ],
         },
     },
