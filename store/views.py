@@ -6,6 +6,7 @@ from carts.models import CartItem
 from .models import Product
 from carts.views import _get_cart_id
 
+
 class StoreView(TemplateView):
     template_name = 'store.html'
 
