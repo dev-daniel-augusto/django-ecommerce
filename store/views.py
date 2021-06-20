@@ -6,7 +6,6 @@ from carts.models import CartItem
 from .models import Product
 from carts.views import _get_cart_id
 
-
 class StoreView(TemplateView):
     template_name = 'store.html'
 
@@ -40,3 +39,20 @@ class ProductView(TemplateView):
         except Exception as error:
             raise error
         return context
+
+
+class SearchView(TemplateView):
+    template_name = 'store.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'keyword' in self.request.GET:
+            keyword = self.request.GET['keyword']
+            if keyword:
+                products = Product.objects.filter(
+                    Q(product_description__icontains=keyword) |
+                    Q(product_name__icontains=keyword)
+                )
+                context['products'] = products
+                context['keyword'] = keyword
+                return context
