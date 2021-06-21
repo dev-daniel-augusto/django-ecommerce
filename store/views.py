@@ -1,6 +1,8 @@
-from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404
 from django.db.models import Q
+
 from category.models import Category
 from carts.models import CartItem
 from .models import Product
@@ -12,18 +14,26 @@ class StoreView(TemplateView):
 
     def get_context_data(self, category_slug=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        categories = None
+        category = None
         products = None
-        if category_slug != None:
-            categories = get_object_or_404(Category, slug=category_slug)
-            context['products'] = products = Product.objects.all().filter(category=categories)
+        if category_slug is not None:
+            category = get_object_or_404(Category, slug=category_slug)
+            products = Product.objects.all().filter(category=category)
+            paginator = Paginator(products, 9)
+            page = self.request.GET.get('page')
+            paged_products = paginator.get_page(page)
+            context['products'] = paged_products
             context['products_count'] = products.count()
             return context
         else:
-            context['products'] = Product.objects.all().filter(is_available=True)
-            products_count = context['products'].count()
+            products = Product.objects.all().filter(is_available=True)
+            products_count = products.count()
+            paginator = Paginator(products, 9)
+            page = self.request.GET.get('page')
+            paged_products = paginator.get_page(page)
             context['products_count'] = products_count
             context['categories'] = Category.objects.all()
+            context['products'] = paged_products
             return context
 
 
