@@ -21,6 +21,7 @@ class RegisterView(FormView):
 
         if password != confirm_password:
             messages.error(self.request, 'Password do not match, please try again')
+            return super().form_invalid(form, *args, **kwargs)
         else:
             user = User.objects.create_user(
                 first_name=first_name,
@@ -30,8 +31,8 @@ class RegisterView(FormView):
                 password=password,
             )
             user.save()
-        messages.success(self.request, 'Your account has been successfully created')
-        return super().form_valid(form, *args, **kwargs)
+            messages.success(self.request, 'Your account has been successfully created')
+            return super().form_valid(form, *args, **kwargs)
 
     def form_invalid(self, form):
         messages.error(self.request, 'Something went wrong, try again')
