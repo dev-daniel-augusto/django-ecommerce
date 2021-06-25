@@ -36,3 +36,11 @@ class RegisterView(FormView):
     def form_invalid(self, form):
         messages.error(self.request, 'Something went wrong, try again')
         return super().form_invalid(form)
+
+
+class LoginView(TemplateView):
+    template_name = 'login.html'
+
+
+class LogoutView(TemplateView):
+    template_name = 'logout.html'
