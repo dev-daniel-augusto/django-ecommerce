@@ -47,16 +47,13 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(Base, AbstractBaseUser, PermissionsMixin):
-    first_name = models.CharField(max_length=50,
-                                  help_text='This field cannot be blank and the max digits are 50',)
-    last_name = models.CharField(max_length=50,
-                                 help_text='This field cannot be blank and the max digits are 50')
-    username = models.CharField(max_length=100, unique=True,
-                                help_text='This field cannot be blank, the max digits are 100 and it must be unique')
-    email = models.EmailField(max_length=100, unique=True,
-                              help_text='This field cannot be blank, the max digits are 100 and it must be unique')
-    phone_number = models.CharField(max_length=50, blank=True)
+class User(Base, AbstractBaseUser, PermissionsMixin,):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    username = models.CharField(max_length=100, unique=True)
+    email = models.EmailField(max_length=100, unique=True)
+    phone = models.CharField(max_length=50, blank=True)
+
     last_login = models.DateTimeField(auto_now_add=True)
     is_superuser = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
@@ -73,6 +70,9 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return True
+
+    def get_full_name(self):
+        return f'{self.first_name} {self.last_name}'
 
     def __str__(self):
         return self.email
