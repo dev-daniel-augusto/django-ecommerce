@@ -1,9 +1,11 @@
-from django.views.generic import TemplateView, FormView
 from django.urls import reverse_lazy
-from django.contrib import messages
+from django.contrib import auth, messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
+from django.views.generic import FormView
 
-from .forms import UserRegistrationForm
 from user.models import User
+from .forms import UserRegistrationForm
 
 
 class RegisterView(FormView):
@@ -20,7 +22,7 @@ class RegisterView(FormView):
         confirm_password = form.cleaned_data['confirm_password']
 
         if password != confirm_password:
-            messages.error(self.request, 'Password do not match, please try again')
+            messages.error(self.request, 'Passwords do not match, please try again')
             return super().form_invalid(form, *args, **kwargs)
         else:
             user = User.objects.create_user(
@@ -39,9 +41,24 @@ class RegisterView(FormView):
         return super().form_invalid(form)
 
 
-class LoginView(TemplateView):
-    template_name = 'login.html'
+def login(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+        user = auth.authenticate(email=email, password=password)
+
+        if user:
+            auth.login(request, user)
+            messages.success(request, 'You have successfully logged in!')
+            return redirect('login')
+        else:
+            messages.error(request, 'Your credentials are incorrect or have expired')
+            return redirect('login')
+    return render(request, 'login.html')
 
 
-class LogoutView(TemplateView):
-    template_name = 'logout.html'
+@login_required(login_url='login')
+def logout(request):
+    auth.logout(request)
+    messages.success(request, 'You have successfully logged out!')
+    return redirect('login')
