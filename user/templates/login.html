@@ -14,7 +14,7 @@
                 <b>{{ message }}</b>
             </div>
         </div>
-    {% enfor %}
+    {% endfor %}
 {% endif %}
 <!-- End Messages -->
 
@@ -30,13 +30,15 @@
           <div class="form-group">
 			<input type="password" class="form-control" placeholder="Password" name="password">
           </div> <!-- form-group// -->
-
           <div class="form-group">
           	<a href="#" class="float-right">Forgot password?</a>
-
           </div> <!-- form-group form-check .// -->
           <div class="form-group">
-              <button type="submit" class="btn btn-primary btn-block"> Login  </button>
+              {% if not user.id %}
+                <button type="submit" class="btn btn-primary btn-block"> Login  </button>
+              {% else %}
+                 <button type="submit" class="btn btn-primary btn-block" disabled>Your are already logged in</button>
+              {% endif %}
           </div> <!-- form-group// -->
       </form>
       </div> <!-- card-body.// -->
@@ -45,7 +47,6 @@
      <p class="text-center mt-4">Don't have account? <a href="{% url 'register' %}">Sign up</a></p>
      <br><br>
 <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
-
 </section>
 
 {% endblock %}
